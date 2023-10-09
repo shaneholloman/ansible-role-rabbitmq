@@ -6,7 +6,8 @@ Installs RabbitMQ on Linux.
 
 ## Requirements
 
-!!! note "Debian only at this time"
+> [!NOTE]
+> Debian only at this time
 
 (Red Hat / CentOS only) Requires the EPEL repository, which can be installed with the `shaneholloman.epel` role.
 
