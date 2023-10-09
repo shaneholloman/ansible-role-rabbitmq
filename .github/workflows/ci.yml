@@ -1,5 +1,6 @@
 ---
 name: CI
+# TODO: Fix erlang issue for rockylinux https://computingforgeeks.com/how-to-install-latest-erlang-on-rhel-8/
 "on":
   workflow_dispatch:
   pull_request:
@@ -42,8 +43,9 @@ jobs:
     strategy:
       matrix:
         distro:
-          - rockylinux8
           - ubuntu2004
+          - ubuntu2204
+          - debian12
           - debian11
 
     steps:
