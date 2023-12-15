@@ -1,7 +1,7 @@
 ---
 # Release Repo to Ansible Galaxy
 name: Release
-"on":
+on:
   workflow_dispatch:
   push:
     tags:
