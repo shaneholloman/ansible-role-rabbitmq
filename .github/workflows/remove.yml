@@ -1,7 +1,7 @@
 ---
 # Remove Repo from Ansible Galaxy
 name: Remove
-on:
+'on':
   workflow_dispatch:
 
 defaults:
