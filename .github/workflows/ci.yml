@@ -1,7 +1,6 @@
 ---
 name: CI
 # TODO: - [ ] Fix erlang issue for rockylinux https://computingforgeeks.com/how-to-install-latest-erlang-on-rhel-8/
-# TODO: - [ ] Fix missing deb packages for debian 12 and ubuntu
 on:
   workflow_dispatch:
   pull_request:
@@ -44,9 +43,7 @@ jobs:
     strategy:
       matrix:
         distro:
-          - rockylinux8
           - ubuntu2204
-          - debian12
 
     steps:
       - name: Check out the codebase.

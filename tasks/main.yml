@@ -1,8 +1,8 @@
 ---
 # Setup/install tasks.
-- name: Include Red Hat setup tasks
-  ansible.builtin.include_tasks: setup-redhat.yml
-  when: ansible_os_family == 'RedHat'
+# - name: Include Red Hat setup tasks
+#   ansible.builtin.include_tasks: setup-redhat.yml
+#   when: ansible_os_family == 'RedHat'
 
 - name: Include Debian setup tasks
   ansible.builtin.include_tasks: setup-debian.yml

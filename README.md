@@ -2,7 +2,7 @@
 
 [![CI](https://github.com/shaneholloman/ansible-role-rabbitmq/actions/workflows/ci.yml/badge.svg)](https://github.com/shaneholloman/ansible-role-rabbitmq/actions/workflows/ci.yml)
 
-Installs RabbitMQ on Linux.
+Installs RabbitMQ on Ubuntu. EL on the way ...
 
 ## Requirements
 
@@ -21,7 +21,7 @@ Available variables are listed below, along with default values (see `defaults/m
 
 Controls the RabbitMQ daemon's state and whether it starts at boot.
 
-    rabbitmq_version: "3.9.13"
+    # temporarily not used: rabbitmq_version: "3.9.13"
 
 The RabbitMQ version to install.
 

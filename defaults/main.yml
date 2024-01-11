@@ -3,7 +3,7 @@ rabbitmq_daemon: rabbitmq-server
 rabbitmq_state: started
 rabbitmq_enabled: true
 
-rabbitmq_version: "3.12.99"
+rabbitmq_version: "3.12.12"
 erlang_version: "26.2.1"
 
 # a variable rpm version and corresponding url that matches the OS. here's an example of the raw url for EL9:
@@ -11,6 +11,8 @@ erlang_version: "26.2.1"
 
 erlang_rpm: "erlang-{{ erlang_version }}-1.el{{ ansible_distribution_major_version }}.{{ ansible_architecture }}.rpm"
 erlang_rpm_url: "https://github.com/rabbitmq/erlang-rpm/releases/download/v{{ erlang_version }}/{{ erlang_rpm }}"
+
+# https://packagecloud.io/rabbitmq/rabbitmq-server/packages/el/8/rabbitmq-server-3.12.12-1.el8.noarch.rpm/download
 
 rabbitmq_rpm: "rabbitmq-server-{{ rabbitmq_version }}-1.el{{ ansible_distribution_major_version }}.noarch.rpm"
 rabbitmq_rpm_url: "https://packagecloud.io/rabbitmq/rabbitmq-server/packages/el/{{ ansible_distribution_major_version }}/{{ rabbitmq_rpm }}/download"

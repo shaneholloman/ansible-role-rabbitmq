@@ -1,15 +1,5 @@
 ---
-
-# Need a separate task needs ensure erlang v26 or higher is installed
-# https://www.rabbitmq.com/which-erlang.html
-
-
-- name: Ensure erlang is installed.
-  ansible.builtin.package:
-    name: erlang
-    state: present
-
-- name: Add GPG keys.
+- name: Add RabbitMQ GPG keys.
   ansible.builtin.rpm_key:
     key: "{{ item }}"
     state: present
@@ -18,6 +8,17 @@
     - "https://packagecloud.io/rabbitmq/erlang/gpgkey"
     - "https://packagecloud.io/rabbitmq/rabbitmq-server/gpgkey"
     - "https://github.com/rabbitmq/signing-keys/releases/download/2.0/rabbitmq-release-signing-key.asc"
+
+- name: Download erlang package.
+  ansible.builtin.get_url:
+    url: "{{ erlang_rpm_url }}"
+    dest: "/tmp/{{ erlang_rpm }}"
+    mode: '0644'
+
+- name: Ensure erlang is installed.
+  ansible.builtin.yum:
+    name: "/tmp/{{ rabbitmq_rpm }}"
+    state: "present"
 
 - name: Download RabbitMQ package.
   ansible.builtin.get_url:

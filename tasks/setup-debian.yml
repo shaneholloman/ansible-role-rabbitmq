@@ -1,8 +1,6 @@
 ---
-# See: https://bugs.debian.org/cgi-bin/bugreport.cgi?bug=863199 and
-# https://github.com/shaneholloman/ansible-role-java/issues/64
 - name: Ensure 'man' directory exists.
-  ansible.builtin.file:  # noqa risky-file-permissions
+  ansible.builtin.file:
     path: /usr/share/man/man1
     state: directory
     mode: '0755'
@@ -11,19 +9,88 @@
     - ansible_distribution == 'Ubuntu'
     - ansible_distribution_major_version | int >= 18
 
-- name: Ensure erlang is installed.
+- name: Ensure curl, gnupg and apt-transport-https are installed.
   ansible.builtin.package:
-    name: erlang
+    name: "{{ item }}"
     state: present
+  loop:
+    - curl
+    - gnupg
+    - apt-transport-https
 
-- name: Download RabbitMQ package.
-  ansible.builtin.get_url:
-    url: "{{ rabbitmq_deb_url }}"
-    dest: "/tmp/{{ rabbitmq_deb }}"
-    mode: '0644'
-
-
-- name: Ensure RabbitMQ is installed.
-  ansible.builtin.apt:
-    deb: "/tmp/{{ rabbitmq_deb }}"
+- name: Add GPG keys
+  ansible.builtin.apt_key:
+    url: "{{ item.url }}"
+    keyring: "{{ item.keyring }}"
     state: present
+  loop:
+    - url: "https://keys.openpgp.org/vks/v1/by-fingerprint/0A9AF2115F4687BD29803A206B73A36E6026DFCA"
+      keyring: "/usr/share/keyrings/com.rabbitmq.team.gpg"
+    - url: "https://keyserver.ubuntu.com/pks/lookup?op=get&search=0xf77f1eda57ebb1cc"
+      keyring: "/usr/share/keyrings/net.launchpad.ppa.rabbitmq.erlang.gpg"
+    - url: "https://packagecloud.io/rabbitmq/rabbitmq-server/gpgkey"
+      keyring: "/usr/share/keyrings/io.packagecloud.rabbitmq.gpg"
+
+- name: Ensure RabbitMQ apt sources are configured
+  ansible.builtin.apt_repository:
+    repo: "{{ item }}"
+    filename: rabbitmq.list
+    state: present
+    update_cache: true
+  loop:
+    - "deb [signed-by=/usr/share/keyrings/net.launchpad.ppa.rabbitmq.erlang.gpg] http://ppa.launchpad.net/rabbitmq/rabbitmq-erlang/ubuntu jammy main"
+    - "deb-src [signed-by=/usr/share/keyrings/net.launchpad.ppa.rabbitmq.erlang.gpg] http://ppa.launchpad.net/rabbitmq/rabbitmq-erlang/ubuntu jammy main"
+    - "deb [signed-by=/usr/share/keyrings/io.packagecloud.rabbitmq.gpg] https://packagecloud.io/rabbitmq/rabbitmq-server/ubuntu/ jammy main"
+    - "deb-src [signed-by=/usr/share/keyrings/io.packagecloud.rabbitmq.gpg] https://packagecloud.io/rabbitmq/rabbitmq-server/ubuntu/ jammy main"
+
+
+- name: Install Erlang packages
+  ansible.builtin.package:
+    name: "{{ item }}"
+    state: present
+  loop:
+    - erlang-base
+    - erlang-asn1
+    - erlang-crypto
+    - erlang-eldap
+    - erlang-ftp
+    - erlang-inets
+    - erlang-mnesia
+    - erlang-os-mon
+    - erlang-parsetools
+    - erlang-public-key
+    - erlang-runtime-tools
+    - erlang-snmp
+    - erlang-ssl
+    - erlang-syntax-tools
+    - erlang-tftp
+    - erlang-tools
+    - erlang-xmerl
+
+- name: Install RabbitMQ server
+  ansible.builtin.package:
+    name: rabbitmq-server
+    state: present
+    update_cache: true
+    force_apt_get: true
+
+- name: Ensure RabbitMQ server is running
+  ansible.builtin.systemd:
+    name: rabbitmq-server
+    state: started
+  register: rabbitmq_status
+
+- name: Print RabbitMQ server status
+  ansible.builtin.debug:
+    var: rabbitmq_status
+
+- name: Check if RabbitMQ Management Plugin is enabled
+  ansible.builtin.command: rabbitmq-plugins list -E
+  register: rabbitmq_plugins
+  changed_when: false
+
+- name: Enable RabbitMQ Management Plugin
+  ansible.builtin.command: rabbitmq-plugins enable rabbitmq_management
+  when: "'rabbitmq_management' not in rabbitmq_plugins.stdout"
+  notify: Restart rabbitmq
+  changed_when: false
