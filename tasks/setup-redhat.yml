@@ -1,4 +1,9 @@
 ---
+
+# Need a separate task needs ensure erlang v26 or higher is installed
+# https://www.rabbitmq.com/which-erlang.html
+
+
 - name: Ensure erlang is installed.
   ansible.builtin.package:
     name: erlang
