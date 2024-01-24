@@ -1,4 +1,4 @@
-# Ansible Role: RabbitMQ
+# Ansible Role: `rabbitmq`
 
 [![CI](https://github.com/shaneholloman/ansible-role-rabbitmq/actions/workflows/ci.yml/badge.svg)](https://github.com/shaneholloman/ansible-role-rabbitmq/actions/workflows/ci.yml)
 
@@ -58,7 +58,7 @@ None.
 
 ## License
 
-MIT / BSD
+Unlicense
 
 ## Author Information
 
